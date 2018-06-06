@@ -8,6 +8,22 @@ page twice , which should return false. Give a max number of visited pages to 25
 Ensure not to over load server with lots of requests.
 '''
 
+# pseudo code
+# get starting url string.
+# get url web page.
+# add to search history
+# while most current url in search history not equal target
+#    if list size = limit
+#        exit program
+#
+#   get web page of most current in search history
+#   get first link element in article
+#   if url not in list
+#       add url in link element to search history
+#    else
+#        exit program
+
+
 
 
 def continue_crawl(search_history, target_url):
@@ -17,6 +33,7 @@ def continue_crawl(search_history, target_url):
     :param target_url:
     :return:
     '''
+    # get th
     pass
 
 
