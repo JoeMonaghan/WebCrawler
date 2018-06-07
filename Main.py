@@ -1,5 +1,6 @@
 import sys
 import requests
+import time
 from bs4 import BeautifulSoup
 
 '''
@@ -37,11 +38,16 @@ def continue_crawl(search_history, limit):
         return False
     return True
 
+def get_next_url(web_page):
+    pass
+
+
 def main():
     # get the starting url from user
     # must have a starting url
     print(f'Main file: {sys.argv[0]}')
     starting_url = None
+    target_url = 'https://en.wikipedia.org/wiki/Philosophy'
     limit = 25
     if len(sys.argv) > 1:
         try:
@@ -62,10 +68,19 @@ def main():
     search_history.append(starting_url)
 
     while continue_crawl(search_history, limit):
-        web_page =  requests.get(search_history[-1])
-        # get
-        web_html = web_page.text
-        next_url = web_html.fin
+        if len(search_history) > 1:
+            # wait for seconds after first and subsequant calls before next request.
+            time.sleep(2)
+        web_page = requests.get(search_history[-1])
+        # get the next url out of search history
+        next_url = get_next_url(web_page)
+        if next_url == target_url:
+            # infrom user of target reached
+            pass
+        else:
+            search_history.append(next_url)
+
+
 
 
     #soup = BeautifulSoup(page, 'html.parser')
