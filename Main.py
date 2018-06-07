@@ -1,3 +1,4 @@
+import sys
 import requests
 from bs4 import BeautifulSoup
 
@@ -24,33 +25,56 @@ Ensure not to over load server with lots of requests.
 #        exit program
 
 
-
-
-def continue_crawl(search_history, target_url):
+def continue_crawl(search_history, limit):
     '''
 
     :param search_history:
     :param target_url:
     :return:
     '''
-    # get th
-    pass
 
+    if len(search_history) >= limit or (search_history[-1] in search_history):
+        return False
+    return True
 
 def main():
-    print('working')
-    response = requests.get('https://www.bloomberg.com/europe')
-    print(response.status_code)
-    page = response.text
-    print(type(page))
+    # get the starting url from user
+    # must have a starting url
+    print(f'Main file: {sys.argv[0]}')
+    starting_url = None
+    limit = 25
+    if len(sys.argv) > 1:
+        try:
+            starting_url = sys.argv[1]
+            limit = sys.argv[2]
+            pass
+        except TypeError:
+            pass
+    print(len(sys.argv))
+    print(str(sys.argv))
+    print('----------------------------------')
+    #response = requests.get('https://www.bloomberg.com/europe')
+    #print(response.status_code)
+    #page = response.text
+    #print(type(page))
 
-    soup = BeautifulSoup(page, 'html.parser')
+    search_history = list()
+    search_history.append(starting_url)
 
-    print(soup.title)
-    print(soup.find_all('a'))
+    while continue_crawl(search_history, limit):
+        web_page =  requests.get(search_history[-1])
+        # get
+        web_html = web_page.text
+        next_url = web_html.fin
 
-    print('*\n' *12)
-    print(soup.find(id="bb-lazy-img-328028706"))
+
+    #soup = BeautifulSoup(page, 'html.parser')
+
+    #print(soup.title)
+    #print(soup.find_all('a'))
+
+    #print('*\n' *12)
+    #print(soup.find(id="bb-lazy-img-328028706"))
     #print(soup.prettify())
 
 
