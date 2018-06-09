@@ -39,23 +39,36 @@ def continue_crawl(search_history, limit):
     return True
 
 def get_next_url(web_page):
+
+    # get the HTML from "url", use the requests library
+    # feed the HTML into Beautiful Soup
+    # find the first link in the article
+    # return the first link as a string, or return None if there is no link
+    html = web_page.text
+    soup = BeautifulSoup(html, "html.parser")
     pass
 
+
+def get_input(starting_url, limit=25):
+    print(f'Main file: {sys.argv[0]}')
+    if len(sys.argv) < 1:
+        # a starting url must be provided.
+        return None
+    else:
+        starting_url = sys.argv[1]
+        print(f'Starting URL is: {starting_url}')
+        try:
+            limit = sys.argv[2]
+        except IndexError:
+            # limit is not required. Default is 25
+            pass
+
+    return starting_url, limit
 
 def main():
     # get the starting url from user
     # must have a starting url
-    print(f'Main file: {sys.argv[0]}')
-    starting_url = None
     target_url = 'https://en.wikipedia.org/wiki/Philosophy'
-    limit = 25
-    if len(sys.argv) > 1:
-        try:
-            starting_url = sys.argv[1]
-            limit = sys.argv[2]
-            pass
-        except TypeError:
-            pass
     print(len(sys.argv))
     print(str(sys.argv))
     print('----------------------------------')
