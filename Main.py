@@ -46,8 +46,16 @@ def get_next_url(web_page):
     # return the first link as a string, or return None if there is no link
     html = web_page.text
     soup = BeautifulSoup(html, "html.parser")
-    pass
 
+    #soup = BeautifulSoup(page, 'html.parser')
+
+    #print(soup.title)
+    #print(soup.find_all('a'))
+
+    #print('*\n' *12)
+    #print(soup.find(id="bb-lazy-img-328028706"))
+    #print(soup.prettify())
+    return None
 
 def get_input(starting_url, limit=25):
     print(f'Main file: {sys.argv[0]}')
@@ -68,14 +76,10 @@ def get_input(starting_url, limit=25):
 def main():
     # get the starting url from user
     # must have a starting url
+    # testing vars will removed when get_input is used.
     target_url = 'https://en.wikipedia.org/wiki/Philosophy'
-    print(len(sys.argv))
-    print(str(sys.argv))
-    print('----------------------------------')
-    #response = requests.get('https://www.bloomberg.com/europe')
-    #print(response.status_code)
-    #page = response.text
-    #print(type(page))
+    starting_url = 'https://en.wikipedia.org/wiki/Blow_(film)'
+    limit = 25
 
     search_history = list()
     search_history.append(starting_url)
@@ -94,16 +98,6 @@ def main():
             search_history.append(next_url)
 
 
-
-
-    #soup = BeautifulSoup(page, 'html.parser')
-
-    #print(soup.title)
-    #print(soup.find_all('a'))
-
-    #print('*\n' *12)
-    #print(soup.find(id="bb-lazy-img-328028706"))
-    #print(soup.prettify())
 
 
 
