@@ -34,27 +34,26 @@ def continue_crawl(search_history, limit):
     :return:
     '''
 
-    if len(search_history) >= limit or (search_history[-1] in search_history):
+    print(f'{search_history[-1]} appears {search_history.count(search_history[-1])} in list')
+    if len(search_history) >= limit or (search_history.count(search_history[-1]) > 1):
         return False
     return True
 
-def get_next_url(web_page):
+def get_next_url(search_history):
 
     # get the HTML from "url", use the requests library
     # feed the HTML into Beautiful Soup
     # find the first link in the article
     # return the first link as a string, or return None if there is no link
+    web_page = requests.get(search_history[-1])
     html = web_page.text
     soup = BeautifulSoup(html, "html.parser")
 
-    #soup = BeautifulSoup(page, 'html.parser')
+    print(soup.title)
 
-    #print(soup.title)
-    #print(soup.find_all('a'))
+    print(soup.prettify())
 
-    #print('*\n' *12)
-    #print(soup.find(id="bb-lazy-img-328028706"))
-    #print(soup.prettify())
+    print(soup.find_all('a'))
     return None
 
 def get_input(starting_url, limit=25):
@@ -88,19 +87,14 @@ def main():
         if len(search_history) > 1:
             # wait for seconds after first and subsequant calls before next request.
             time.sleep(2)
-        web_page = requests.get(search_history[-1])
+
         # get the next url out of search history
-        next_url = get_next_url(web_page)
+        next_url = get_next_url(search_history)
         if next_url == target_url:
             # infrom user of target reached
             pass
         else:
             search_history.append(next_url)
-
-
-
-
-
 
 
 if __name__ == '__main__':
