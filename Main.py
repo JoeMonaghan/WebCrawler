@@ -11,46 +11,29 @@ page twice , which should return false. Give a max number of visited pages to 25
 Ensure not to over load server with lots of requests.
 '''
 
-# pseudo code
-# get starting url string.
-# get url web page.
-# add to search history
-# while most current url in search history not equal target
-#    if list size = limit
-#        exit program
-#
-#   get web page of most current in search history
-#   get first link element in article
-#   if url not in list
-#       add url in link element to search history
-#    else
-#        exit program
-
-
 def continue_crawl(search_history, limit):
     '''
-
-    :param search_history:
-    :param target_url:
+    Checks if limit is reached or the current url has been already visited. If either
+    is true return false to stop the crawl.
+    :param search_history: list of all visited urls.
+    :param limit: max number of urls before reaching target.
     :return:
     '''
-
-    print(f'{search_history[-1]} appears {search_history.count(search_history[-1])} in list')
-    if len(search_history) >= limit or (search_history.count(search_history[-1]) > 1):
+    if len(search_history) == limit or (search_history.count(search_history[-1]) > 1):
         return False
     return True
 
 def get_next_url(next_url):
+    '''
+    Returns the first link in the article.
+    :param next_url:
+    :return: the first link
+    '''
 
-    # get the HTML from "url", use the requests library
-    # feed the HTML into Beautiful Soup
-    # find the first link in the article
-    # return the first link as a string, or return None if there is no link
     web_page = requests.get(next_url)
     html = web_page.text
     soup = BeautifulSoup(html, "html.parser")
 
-    # TODO: find the first link in the article, or set to None if
     # there is no link in the article.
     content_div = soup.find(id="mw-content-text").find(class_="mw-parser-output")
     for element in content_div.find_all("p", recursive=False):
@@ -63,7 +46,14 @@ def get_next_url(next_url):
 
     return None
 
-def get_input(starting_url, limit=25):
+
+def get_input(limit):
+    '''
+    Get the starting url and limit if provided. If limit is not of type int the
+    program will exit informing user.
+    :param limit:
+    :return: starting url and limit if provided.
+    '''
     print(f'Main file: {sys.argv[0]}')
     if len(sys.argv) < 1:
         # a starting url must be provided.
@@ -72,27 +62,36 @@ def get_input(starting_url, limit=25):
         starting_url = sys.argv[1]
         print(f'Starting URL is: {starting_url}')
         try:
-            limit = sys.argv[2]
+            limit = int(sys.argv[2])
         except IndexError:
             # limit is not required. Default is 25
             pass
+        except TypeError:
+            print('Invalid input for limit must be a number')
+            sys.exit()
 
     return starting_url, limit
+
 
 def main():
     # get the starting url from user
     # must have a starting url
     # testing vars will removed when get_input is used.
     target_url = 'https://en.wikipedia.org/wiki/Philosophy'
-    starting_url = 'https://en.wikipedia.org/wiki/Blow_(film)'
     limit = 25
+
+    if get_input() is not None:
+        starting_url, limit = get_input(limit)
+    else:
+        print('A starting url is required!')
+        sys.exit()
     count = 1
 
     search_history = list()
     search_history.append(starting_url)
-    print(f'{count}: {starting_url}')
 
     while continue_crawl(search_history, limit):
+        print(f'{count}: {search_history[-1]}')
         count = count + 1
         if len(search_history) > 1:
             # wait for seconds after first and subsequant calls before next request.
