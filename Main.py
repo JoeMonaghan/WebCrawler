@@ -2,6 +2,7 @@ import sys
 import requests
 import time
 from bs4 import BeautifulSoup
+import urllib
 
 '''
 Given a starting url of ant wikipedia page, work if it possible to get to https://en.wikipedia.org/wiki/Philosophy
@@ -39,21 +40,27 @@ def continue_crawl(search_history, limit):
         return False
     return True
 
-def get_next_url(search_history):
+def get_next_url(next_url):
 
     # get the HTML from "url", use the requests library
     # feed the HTML into Beautiful Soup
     # find the first link in the article
     # return the first link as a string, or return None if there is no link
-    web_page = requests.get(search_history[-1])
+    web_page = requests.get(next_url)
     html = web_page.text
     soup = BeautifulSoup(html, "html.parser")
 
-    print(soup.title)
+    # TODO: find the first link in the article, or set to None if
+    # there is no link in the article.
+    content_div = soup.find(id="mw-content-text").find(class_="mw-parser-output")
+    for element in content_div.find_all("p", recursive=False):
+        if element.find("a", recursive=False):
+            article_link = element.find("a", recursive=False).get('href')
+            break
 
-    print(soup.prettify())
+    if article_link:
+        return urllib.parse.urljoin('https://en.wikipedia.org/', article_link)
 
-    print(soup.find_all('a'))
     return None
 
 def get_input(starting_url, limit=25):
@@ -79,20 +86,24 @@ def main():
     target_url = 'https://en.wikipedia.org/wiki/Philosophy'
     starting_url = 'https://en.wikipedia.org/wiki/Blow_(film)'
     limit = 25
+    count = 1
 
     search_history = list()
     search_history.append(starting_url)
+    print(f'{count}: {starting_url}')
 
     while continue_crawl(search_history, limit):
+        count = count + 1
         if len(search_history) > 1:
             # wait for seconds after first and subsequant calls before next request.
             time.sleep(2)
 
         # get the next url out of search history
-        next_url = get_next_url(search_history)
+        next_url = get_next_url(search_history[-1])
+
         if next_url == target_url:
             # infrom user of target reached
-            pass
+            print(f'The target url {target_url} has been reached.')
         else:
             search_history.append(next_url)
 
